@@ -1,4 +1,7 @@
 from app import app
+from mock import MagicMock
+
+import requests
 import unittest
 import json
 
@@ -16,6 +19,15 @@ class MyTestClass(unittest.TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_temp(self):
+        def get_stub(*args, **kwargs):
+            response = requests.get.return_value
+            with open(
+                    'fixtures/api.worldweatheronline.com_london.json',
+                    'r') as f:
+                response.text = f.read()
+                return response
+        requests.get = MagicMock(side_effect=get_stub)
+
         result = self.app.get('/temp')
         self.assertEqual(result.status_code, 200)
         data = json.loads(result.data)

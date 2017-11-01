@@ -27,7 +27,9 @@ def temp():
     }
     response = requests.get(WORLDWEATHERONLINE_WEATHER_ENDPOINT, params=params)
     response.raise_for_status()
-    temp = response.json()['data']['current_condition'][0]['temp_C']
+
+    jdata = json.loads(response.text)
+    temp = jdata['data']['current_condition'][0]['temp_C']
 
     return json.dumps({'temp': temp})
 
